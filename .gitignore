@@ -24,3 +24,10 @@ project/plugins/project/
 
 docs/tut-out/*.md
 docs/tut-out/*.html
+
+server/src/main/resources/*.html
+.idea
+.metals
+.bloop
+project/.bloop
+project/metals.sbt

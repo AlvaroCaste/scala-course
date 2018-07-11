@@ -98,6 +98,17 @@ Typeclasses, together with laws, provide
 - Generality: If we create a datatype, and we see it's `Sumable`,
   we'll be able to use all functions that operate on `Sumables`.
 
+# Using typeclasses
+
+#
+
+##
+
+```tut:silent
+def needsTypeclassContextBound[A: Sumable] = ???
+def needsTypeclassImplicit[A](implicit x: Sumable[A]) = ???
+```
+
 # Typeclasses
 
 ##
@@ -108,7 +119,7 @@ There are lots of typeclasses libraries for Scala, but we'll use
 ##
 
 We've already seen a very common typeclass in our examples, `Sumable`.
-It's called `Semigroup` normally in Functional programming.
+It's normally called `Semigroup` in Functional programming.
 
 # Semigroup
 
@@ -141,7 +152,7 @@ trait Monoid[A] extends Semigroup[A] {
 What could be the `identity` element for the three semigroups we
 created?
 
-##
+## implementation
 
 ```tut
 implicit val intSumMonoid: Monoid[Int] = new Monoid[Int] {
@@ -166,6 +177,16 @@ implicit val booleanAndMonoid: Monoid[Boolean] = new Monoid[Boolean] {
   def identity: Boolean = true
   def combine(a: Boolean, b: Boolean): Boolean = a && b
 }
+```
+
+##
+
+Now that we have `identity` we can add a couple of more laws to Monoid:
+
+```
+sum(a, sum(b, c)) == sum(sum(a, b), c) // associativity
+sum(a, identity) == a // right identity
+sum(identity, a) == a // left identity
 ```
 
 # Eq
@@ -207,12 +228,32 @@ trait Show[A] {
 }
 ```
 
+# Foldable
+
+##
+
+Is a typeclass whose type parameter is a type constructor that can be
+folded to produce a value.
+
+##
+
+```tut:invisible
+type Eval[A] = A
+```
+
+```tut:silent
+trait Foldable[F[_]] {
+  def foldLeft[A, B](fa: F[A], b: B)(f: (B, A) => B): B
+  def foldRight[A, B](fa: F[A],lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B]
+}
+```
+
 # Functor
 
 ##
 
-Is a typeclass that for type constructors (as opposed to the previous
-ones we've seen) that can be mapped over. Let's see how it's declared.
+Is a typeclass for type constructors that can be mapped over. Let's
+see how it's declared.
 
 ##
 
@@ -254,3 +295,10 @@ trait Monad[F[_]] extends Applicative[F] {
   def flatMap[A, B](fn: A => F[B])(fa: F[A]): F[B]
 }
 ```
+
+##
+
+Since monads have a flatMap method, we can use any Monad[F] in a for
+comprehension!
+
+# Exercise 5
