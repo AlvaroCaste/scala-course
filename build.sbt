@@ -16,7 +16,7 @@ lazy val exercise5 = project
   .in(file("exercises/exercise5"))
   .dependsOn(exercise3)
   .settings(
-    libraryDependencies += "org.typelevel" %% "cats-core" % "1.1.0"
+    libraryDependencies += "org.typelevel" %% "cats-core" % "2.1.0"
   )
 
 lazy val exampleScalacheck = project
@@ -33,7 +33,7 @@ lazy val exampleScalacheck = project
 lazy val docs = project
   .in(file("docs"))
   .settings(
-    Tut / scalacOptions ++= Seq(
+    Compile / scalacOptions ++= Seq(
       "-encoding", "UTF-8", // 2 args
       "-feature",
       "-language:existentials",
@@ -41,17 +41,11 @@ lazy val docs = project
       "-language:implicitConversions"
     ),
     addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.5"),
-    tutSourceDirectory := baseDirectory.value / "tut",
-    tutTargetDirectory := baseDirectory.value / "tut-out",
-    libraryDependencies += "org.scalacheck" %% "scalacheck" % "1.13.4")
-  .enablePlugins(TutPlugin)
-
-lazy val server = project
-  .in(file("server"))
-  .settings(
+    mdocIn := baseDirectory.value / "mdoc",
+    mdocOut := baseDirectory.value / "mdoc-out",
     libraryDependencies ++= Seq(
-      "org.http4s" %% "http4s-dsl" % "0.18.21",
-      "org.http4s" %% "http4s-blaze-server" % "0.18.21",
-      "ch.qos.logback" % "logback-classic" % "1.2.3"
+      "org.scalacheck" %% "scalacheck" % "1.14.0",
+      "org.typelevel" %% "cats-core" % "2.1.0"
     )
   )
+  .enablePlugins(MdocPlugin)
